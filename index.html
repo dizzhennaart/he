@@ -57,6 +57,40 @@
 <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
 <script type="text/javascript">
    (function(){ emailjs.init("YOUR_PUBLIC_KEY"); })(); 
+
+
+    @media (max-width: 768px) {
+  .footer-top {
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+  }
+
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+}
+
+
+
+
+        /* Mobile Friendly */
+        @media (max-width: 768px) {
+            .banner {
+                height: 260px;
+            }
+
+            .banner-text h2 {
+                font-size: 24px;
+            }
+
+			    .hero {
+        flex-direction: column;
+        text-align: center;
+    }
+        }
+    
 </script>
 
 </head>
