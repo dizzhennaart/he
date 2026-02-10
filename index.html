@@ -2,102 +2,80 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Balloon Letter 💕</title>
+<title>Letter 💕</title>
 
-<!-- REQUIRED FOR MOBILE -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <!-- EmailJS SDK -->
 <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
 <script>
-  (function(){
-    emailjs.init("YOUR_PUBLIC_KEY");
-  })();
+(function(){
+    emailjs.init("PUBLIC_KEY_HERE"); // 🔴 replace with your public key
+})();
 </script>
 
 <style>
-/* GLOBAL RESET */
 * {
     box-sizing: border-box;
 }
 
 body {
     margin: 0;
-    min-height: 100vh;
+    min-height: 100svh;
     background-image: url("Images/background.jpg");
     background-size: cover;
     background-position: center;
     display: flex;
     justify-content: center;
     align-items: center;
-    overflow-x: hidden;
     font-family: 'Segoe UI', sans-serif;
+    -webkit-font-smoothing: antialiased;
 }
 
-/* RESPONSIVE IMAGES */
-img {
-    max-width: 100%;
-    height: auto;
-    display: block;
-}
-
-/* MAIN CONTAINER */
 .container {
     text-align: center;
-    position: relative;
     opacity: 0;
     transform: translateY(200px);
-    animation: flyUp 3s ease-out forwards, float 4s ease-in-out infinite;
-    animation-delay: 0s, 3s;
-    width: 100%;
+    animation: flyUp 2.5s ease-out forwards;
     max-width: 360px;
-    padding: 0 12px;
+    padding: 12px;
 }
 
-/* BALLOON */
 .balloon img {
-    width: 160px;
+    width: 140px;
     margin: 0 auto;
 }
 
-/* STRING */
 .string {
     width: 2px;
-    height: 40px;
+    height: 35px;
     background: #555;
     margin: 0 auto;
 }
 
-/* CONTENT CARD */
 .content {
-    background: rgba(255, 255, 255, 0.95);
-    padding: 24px 20px;
+    background: rgba(255, 255, 255, 0.96);
+    padding: 22px 18px;
     border-radius: 18px;
     box-shadow: 0 15px 30px rgba(0,0,0,0.25);
 }
 
-.content h2 {
-    margin-top: 0;
-}
-
-/* LETTER IMAGE */
 .letter img {
-    width: 200px;
+    width: 160px;
     margin: 15px auto;
 }
 
-/* BUTTONS */
 .buttons {
     margin-top: 20px;
-    position: relative;
     height: 60px;
+    position: relative;
 }
 
 button {
-    padding: 10px 22px;
+    padding: 10px 20px;
     border: none;
     border-radius: 20px;
-    font-size: 16px;
+    font-size: 15px;
     cursor: pointer;
     position: absolute;
 }
@@ -110,45 +88,19 @@ button {
 
 #noBtn {
     background: #ccc;
-    color: #333;
     right: 20px;
 }
 
-/* ANIMATIONS */
 @keyframes flyUp {
-    0% { transform: translateY(200px); opacity: 0; }
-    70% { transform: translateY(-15px); opacity: 1; }
-    100% { transform: translateY(0); opacity: 1; }
+    from { transform: translateY(200px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
 }
 
-@keyframes float {
-    0% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
-    100% { transform: translateY(0); }
-}
-
-/* MOBILE OPTIMIZATION */
 @media (max-width: 480px) {
-    .balloon img { width: 120px; }
-    .letter img { width: 140px; }
-    .string { height: 28px; }
-
-    .content {
-        padding: 20px 16px;
-    }
-
-    h2 {
-        font-size: 20px;
-    }
-
-    p {
-        font-size: 14px;
-    }
-
-    button {
-        font-size: 14px;
-        padding: 8px 18px;
-    }
+    .balloon img { width: 110px; }
+    .letter img { width: 130px; }
+    h2 { font-size: 20px; }
+    p { font-size: 14px; }
 }
 </style>
 </head>
@@ -157,17 +109,17 @@ button {
 
 <div class="container">
     <div class="balloon">
-        <img src="Images/balloon.png" alt="Balloon">
+        <img src="Images/balloon.png">
     </div>
 
     <div class="string"></div>
 
     <div class="content">
-        <h2>Your Title 💕</h2>
-        <p>Your sweet message goes here 💌</p>
+        <h2>Do you like this? 💕</h2>
+        <p>This balloon came with a little question just for you 💌</p>
 
         <div class="letter">
-            <img src="Images/images.png" alt="Letter">
+            <img src="Images/images.png">
         </div>
 
         <div class="buttons">
@@ -181,24 +133,35 @@ button {
 const noBtn = document.getElementById("noBtn");
 const yesBtn = document.getElementById("yesBtn");
 
-/* MOVE NO BUTTON */
 function moveButton() {
-    const x = Math.random() * 200 - 100;
-    const y = Math.random() * 100 - 50;
+    const x = Math.random() * 160 - 80;
+    const y = Math.random() * 80 - 40;
     noBtn.style.transform = `translate(${x}px, ${y}px)`;
 }
 
 noBtn.addEventListener("mouseover", moveButton);
 noBtn.addEventListener("touchstart", moveButton);
 
-/* YES BUTTON → SEND EMAIL + REDIRECT */
 yesBtn.addEventListener("click", () => {
-    emailjs.send("service_sax9tgk", "template_za0vc1o", {
-        message: "Someone clicked YES on your balloon page!"
-    }).then(() => {
+
+    const templateParams = {
+        name: "Balloon Page",
+        title: "YES Button Clicked 💖",
+        email: "notification@balloon.page",
+        time: new Date().toLocaleString()
+    };
+
+    emailjs.send(
+        "service_sax9tgk",      // ✅ your service ID
+        "template_za0vc1o",     // ✅ your template ID
+        templateParams
+    )
+    .then(() => {
         window.location.href = "thankyou.html";
-    }).catch(() => {
-        window.location.href = "thankyou.html";
+    })
+    .catch((error) => {
+        console.error("Email failed:", error);
+        alert("Email failed. Check console.");
     });
 });
 </script>
