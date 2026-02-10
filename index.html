@@ -3,27 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <title>Letter 💕</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-
-    <!-- Google tag (gtag.js) -->
+<!-- ================= GOOGLE ANALYTICS ================= -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-M9Q82GGYXF"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-
   gtag('config', 'G-M9Q82GGYXF');
 </script>
 
-    
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<!-- EmailJS SDK -->
+<!-- ================= EMAILJS ================= -->
 <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
 <script>
-(function(){
-    emailjs.init("PUBLIC_KEY_HERE"); // 🔴 replace with your public key
-})();
+  (function(){
+    emailjs.init("PUBLIC_KEY_HERE"); // 🔴 replace with your EmailJS public key
+  })();
 </script>
 
 <style>
@@ -41,7 +37,6 @@ body {
     justify-content: center;
     align-items: center;
     font-family: 'Segoe UI', sans-serif;
-    -webkit-font-smoothing: antialiased;
 }
 
 .container {
@@ -55,7 +50,6 @@ body {
 
 .balloon img {
     width: 140px;
-    margin: 0 auto;
 }
 
 .string {
@@ -111,8 +105,6 @@ button {
 @media (max-width: 480px) {
     .balloon img { width: 110px; }
     .letter img { width: 130px; }
-    h2 { font-size: 20px; }
-    p { font-size: 14px; }
 }
 </style>
 </head>
@@ -121,7 +113,7 @@ button {
 
 <div class="container">
     <div class="balloon">
-        <img src="Images/balloon.png">
+        <img src="Images/balloon.png" alt="Balloon">
     </div>
 
     <div class="string"></div>
@@ -131,7 +123,7 @@ button {
         <p>This balloon came with a little question just for you 💌</p>
 
         <div class="letter">
-            <img src="Images/images.png">
+            <img src="Images/images.png" alt="Letter">
         </div>
 
         <div class="buttons">
@@ -145,6 +137,7 @@ button {
 const noBtn = document.getElementById("noBtn");
 const yesBtn = document.getElementById("yesBtn");
 
+/* NO button movement */
 function moveButton() {
     const x = Math.random() * 160 - 80;
     const y = Math.random() * 80 - 40;
@@ -154,8 +147,19 @@ function moveButton() {
 noBtn.addEventListener("mouseover", moveButton);
 noBtn.addEventListener("touchstart", moveButton);
 
+/* YES button logic */
 yesBtn.addEventListener("click", () => {
 
+    // Prevent double clicks
+    yesBtn.disabled = true;
+
+    // Google Analytics event
+    gtag('event', 'yes_clicked', {
+        event_category: 'interaction',
+        event_label: 'Balloon Page'
+    });
+
+    // EmailJS data
     const templateParams = {
         name: "Balloon Page",
         title: "YES Button Clicked 💖",
@@ -163,9 +167,10 @@ yesBtn.addEventListener("click", () => {
         time: new Date().toLocaleString()
     };
 
+    // Send email
     emailjs.send(
-        "service_sax9tgk",      // ✅ your service ID
-        "template_za0vc1o",     // ✅ your template ID
+        "service_sax9tgk",     // 🔴 your service ID
+        "template_za0vc1o",    // 🔴 your template ID
         templateParams
     )
     .then(() => {
@@ -173,7 +178,7 @@ yesBtn.addEventListener("click", () => {
     })
     .catch((error) => {
         console.error("Email failed:", error);
-        alert("Email failed. Check console.");
+        yesBtn.disabled = false;
     });
 });
 </script>
