@@ -42,17 +42,6 @@ p {
     font-size: 15px;
 }
 
-.music-btn {
-    margin-top: 18px;
-    padding: 10px 22px;
-    border: none;
-    border-radius: 20px;
-    background: #ff69b4;
-    color: white;
-    font-size: 14px;
-    cursor: pointer;
-}
-
 @keyframes fadeIn {
     from { opacity: 0; transform: scale(0.9); }
     to { opacity: 1; transform: scale(1); }
@@ -73,28 +62,24 @@ p {
         Your answer made this balloon very happy 🎈  
         I truly appreciate your response.
     </p>
-
-    <button class="music-btn" onclick="toggleMusic()">Play / Pause Music 🎵</button>
 </div>
 
-<!-- 🎵 Background Music -->
-<audio id="bgm" loop>
+<!-- 🎵 Hidden Background Music -->
+<audio id="bgm" autoplay loop>
     <source src="Audio/bgm.mp3" type="audio/mpeg">
 </audio>
 
 <script>
-const bgm = document.getElementById("bgm");
+window.addEventListener("load", () => {
+    const bgm = document.getElementById("bgm");
+    bgm.volume = 0.3; // soft romantic volume
 
-function toggleMusic() {
-    if (bgm.paused) {
-        bgm.volume = 0.3; // soft volume
-        bgm.play();
-    } else {
-        bgm.pause();
-    }
-}
+    // Attempt autoplay (works because user clicked YES before)
+    bgm.play().catch(() => {
+        // In rare cases autoplay may fail — silently ignore
+    });
+});
 </script>
 
 </body>
 </html>
-
