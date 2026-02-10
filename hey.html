@@ -1,1 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Thank You 💖</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+    margin: 0;
+    min-height: 100svh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #ffffff;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.thankyou-box {
+    text-align: center;
+    background: rgba(255, 255, 255, 0.98);
+    padding: 30px 22px;
+    border-radius: 22px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    max-width: 360px;
+    animation: fadeIn 1.6s ease forwards;
+}
+
+.thankyou-box img {
+    width: 180px;
+    margin-bottom: 18px;
+}
+
+h1 {
+    margin: 10px 0;
+    color: #ff69b4;
+}
+
+p {
+    color: #444;
+    line-height: 1.6;
+    font-size: 15px;
+}
+
+.music-btn {
+    margin-top: 18px;
+    padding: 10px 22px;
+    border: none;
+    border-radius: 20px;
+    background: #ff69b4;
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+@media (max-width: 480px) {
+    .thankyou-box img { width: 150px; }
+}
+</style>
+</head>
+
+<body>
+
+<div class="thankyou-box">
+    <img src="Images/thankyou.png" alt="Thank You">
+    <h1>Thank You 💕</h1>
+    <p>
+        Your answer made this balloon very happy 🎈  
+        I truly appreciate your response.
+    </p>
+
+    <button class="music-btn" onclick="toggleMusic()">Play / Pause Music 🎵</button>
+</div>
+
+<!-- 🎵 Background Music -->
+<audio id="bgm" loop>
+    <source src="Music/bgm.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+const bgm = document.getElementById("bgm");
+
+function toggleMusic() {
+    if (bgm.paused) {
+        bgm.volume = 0.3; // soft volume
+        bgm.play();
+    } else {
+        bgm.pause();
+    }
+}
+</script>
+
+</body>
+</html>
 
