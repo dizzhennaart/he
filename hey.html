@@ -48,68 +48,95 @@ p {
 .scroll-container {
     position: relative;
     width: 260px;
-    height: 160px;
+    height: 170px;
     margin: 25px auto 0;
-    perspective: 1200px;
     cursor: pointer;
 }
 
-/* Rolled Letter */
+/* Rolled Letter Base */
 .scroll-roll {
     position: absolute;
     width: 100%;
     height: 100%;
     background: url('Images/vintage_letter.png') no-repeat center/cover;
-    border-radius: 10px;
+    border-radius: 12px;
     transform: scaleY(0.35);
-    transition: opacity 1s ease;
-}
-
-/* Ribbon */
-.ribbon {
-    position: absolute;
-    width: 120px;
-    height: 18px;
-    background: crimson;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    border-radius: 4px;
     transition: opacity 0.8s ease;
 }
 
-/* Opened Scroll */
+/* Ribbon Closed */
+.ribbon {
+    position: absolute;
+    width: 130px;
+    height: 20px;
+    background: linear-gradient(45deg, crimson, #ff4d6d);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 6px;
+    transition: all 0.6s ease;
+}
+
+/* Ribbon open animation */
+.scroll-container.open .ribbon {
+    transform: translate(-50%, -50%) scaleX(0.1);
+    opacity: 0;
+}
+
+/* Hidden scroll content wrapper */
+.scroll-mask {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    border-radius: 12px;
+}
+
+/* Actual scroll letter */
 .scroll-content {
     position: absolute;
     width: 100%;
     height: 100%;
     background: url('Images/vintage_letter.png') no-repeat center/cover;
-    border-radius: 10px;
-    padding: 18px;
+    padding: 20px;
     box-sizing: border-box;
-    transform-origin: top;
-    transform: rotateX(90deg);
-    transition: transform 2s ease-in-out;
+    transform: translateY(-100%);
     display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
 }
 
-/* Open State */
+/* Step-by-step unroll animation */
+.scroll-container.open .scroll-content {
+    animation: unroll 2.5s ease forwards;
+}
+
+.scroll-container.closing .scroll-content {
+    animation: rollback 2s ease forwards;
+}
+
+@keyframes unroll {
+    0% { transform: translateY(-100%); }
+    30% { transform: translateY(-70%); }
+    60% { transform: translateY(-35%); }
+    80% { transform: translateY(-15%); }
+    100% { transform: translateY(0%); }
+}
+
+@keyframes rollback {
+    0% { transform: translateY(0%); }
+    30% { transform: translateY(-20%); }
+    60% { transform: translateY(-45%); }
+    80% { transform: translateY(-70%); }
+    100% { transform: translateY(-100%); }
+}
+
+/* Hide rolled look when open */
 .scroll-container.open .scroll-roll {
     opacity: 0;
 }
 
-.scroll-container.open .ribbon {
-    opacity: 0;
-}
-
-.scroll-container.open .scroll-content {
-    transform: rotateX(0deg);
-}
-
-/* Fade animation */
 @keyframes fadeIn {
     from { opacity: 0; transform: scale(0.9); }
     to { opacity: 1; transform: scale(1); }
@@ -137,18 +164,20 @@ p {
         I truly appreciate your response.
     </p>
 
-    <!-- Letter Under Content -->
-    <div class="scroll-container" onclick="openScroll()">
+    <!-- Scroll -->
+    <div class="scroll-container" onclick="toggleScroll()">
         <div class="scroll-roll"></div>
         <div class="ribbon"></div>
 
-        <div class="scroll-content">
-            <div>
-                <h3 style="margin:0;color:#ff69b4;">A Special Note 💌</h3>
-                <p style="font-size:14px;">
-                    You mean a lot to me.<br>
-                    Thank you for being amazing ❤️
-                </p>
+        <div class="scroll-mask">
+            <div class="scroll-content">
+                <div>
+                    <h3 style="margin:0;color:#ff69b4;">A Special Note 💌</h3>
+                    <p style="font-size:14px;">
+                        You mean a lot to me.<br>
+                        Thank you for being amazing ❤️
+                    </p>
+                </div>
             </div>
         </div>
     </div>
@@ -161,22 +190,27 @@ p {
 </audio>
 
 <script>
-function openScroll(){
-    document.querySelector(".scroll-container").classList.add("open");
-}
-
-/* Audio fix (works after first touch/click) */
+const container = document.querySelector(".scroll-container");
 const bgm = document.getElementById("bgm");
 bgm.volume = 0.3;
 
-function startMusic() {
-    bgm.play().catch(() => {});
-    document.removeEventListener("click", startMusic);
-    document.removeEventListener("touchstart", startMusic);
-}
+let isOpen = false;
 
-document.addEventListener("click", startMusic);
-document.addEventListener("touchstart", startMusic);
+function toggleScroll(){
+    if(!isOpen){
+        container.classList.remove("closing");
+        container.classList.add("open");
+        bgm.currentTime = 0;
+        bgm.play().catch(()=>{});
+        isOpen = true;
+    }else{
+        container.classList.remove("open");
+        container.classList.add("closing");
+        bgm.pause();
+        bgm.currentTime = 0;
+        isOpen = false;
+    }
+}
 </script>
 
 </body>
