@@ -16,19 +16,20 @@ body {
     font-family: 'Segoe UI', sans-serif;
 }
 
+/* Thank You Box */
 .thankyou-box {
     text-align: center;
     background: rgba(255, 255, 255, 0.98);
     padding: 30px 22px;
     border-radius: 22px;
     box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-    max-width: 360px;
+    max-width: 400px;
     animation: fadeIn 1.6s ease forwards;
 }
 
 .thankyou-box img {
-    width: 180px;
-    margin-bottom: 18px;
+    width: 170px;
+    margin-bottom: 15px;
 }
 
 h1 {
@@ -42,13 +43,83 @@ p {
     font-size: 15px;
 }
 
+/* ----------- SCROLL DESIGN ----------- */
+
+.scroll-container {
+    position: relative;
+    width: 260px;
+    height: 160px;
+    margin: 25px auto 0;
+    perspective: 1200px;
+    cursor: pointer;
+}
+
+/* Rolled Letter */
+.scroll-roll {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: url('Images/vintage_letter.png') no-repeat center/cover;
+    border-radius: 10px;
+    transform: scaleY(0.35);
+    transition: opacity 1s ease;
+}
+
+/* Ribbon */
+.ribbon {
+    position: absolute;
+    width: 120px;
+    height: 18px;
+    background: crimson;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 4px;
+    transition: opacity 0.8s ease;
+}
+
+/* Opened Scroll */
+.scroll-content {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: url('Images/vintage_letter.png') no-repeat center/cover;
+    border-radius: 10px;
+    padding: 18px;
+    box-sizing: border-box;
+    transform-origin: top;
+    transform: rotateX(90deg);
+    transition: transform 2s ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+/* Open State */
+.scroll-container.open .scroll-roll {
+    opacity: 0;
+}
+
+.scroll-container.open .ribbon {
+    opacity: 0;
+}
+
+.scroll-container.open .scroll-content {
+    transform: rotateX(0deg);
+}
+
+/* Fade animation */
 @keyframes fadeIn {
     from { opacity: 0; transform: scale(0.9); }
     to { opacity: 1; transform: scale(1); }
 }
 
 @media (max-width: 480px) {
-    .thankyou-box img { width: 150px; }
+    .scroll-container {
+        width: 220px;
+        height: 150px;
+    }
 }
 </style>
 </head>
@@ -56,29 +127,56 @@ p {
 <body>
 
 <div class="thankyou-box">
+
     <img src="Images/balloon.png">
+
     <h1>Thank You 💕</h1>
+
     <p>
         Your answer made this balloon very happy 🎈  
         I truly appreciate your response.
     </p>
+
+    <!-- Letter Under Content -->
+    <div class="scroll-container" onclick="openScroll()">
+        <div class="scroll-roll"></div>
+        <div class="ribbon"></div>
+
+        <div class="scroll-content">
+            <div>
+                <h3 style="margin:0;color:#ff69b4;">A Special Note 💌</h3>
+                <p style="font-size:14px;">
+                    You mean a lot to me.<br>
+                    Thank you for being amazing ❤️
+                </p>
+            </div>
+        </div>
+    </div>
+
 </div>
 
-<!-- 🎵 Hidden Background Music -->
-<audio id="bgm" autoplay loop>
+<!-- 🎵 Background Music -->
+<audio id="bgm" loop>
     <source src="Audio/bgm.mp3" type="audio/mpeg">
 </audio>
 
 <script>
-window.addEventListener("load", () => {
-    const bgm = document.getElementById("bgm");
-    bgm.volume = 0.3; // soft romantic volume
+function openScroll(){
+    document.querySelector(".scroll-container").classList.add("open");
+}
 
-    // Attempt autoplay (works because user clicked YES before)
-    bgm.play().catch(() => {
-        // In rare cases autoplay may fail — silently ignore
-    });
-});
+/* Audio fix (works after first touch/click) */
+const bgm = document.getElementById("bgm");
+bgm.volume = 0.3;
+
+function startMusic() {
+    bgm.play().catch(() => {});
+    document.removeEventListener("click", startMusic);
+    document.removeEventListener("touchstart", startMusic);
+}
+
+document.addEventListener("click", startMusic);
+document.addEventListener("touchstart", startMusic);
 </script>
 
 </body>
