@@ -18,7 +18,7 @@ gtag('config', 'G-M9Q82GGYXF');
 <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
 <script>
 (function(){
-    emailjs.init("NYk14S6l9OvsXLgy"); // 🔴 Replace with your real EmailJS public key
+    emailjs.init("NYk14S6l9OvsXLgy"); 
 })();
 </script>
 
@@ -87,12 +87,11 @@ button {
     transition: transform 0.3s ease;
 }
 
-/* YES button always clickable */
 #yesBtn {
     background: #ff69b4;
     color: white;
     left: 20px;
-    z-index: 2;   /* Important fix */
+    z-index: 2;
 }
 
 #noBtn {
@@ -137,53 +136,57 @@ button {
 </div>
 
 <script>
-const noBtn = document.getElementById("noBtn");
-const yesBtn = document.getElementById("yesBtn");
+window.addEventListener("load", function() {
 
-/* Move NO button */
-function moveButton() {
-    const x = Math.random() * 160 - 80;
-    const y = Math.random() * 80 - 40;
-    noBtn.style.transform = `translate(${x}px, ${y}px)`;
-}
+    const noBtn = document.getElementById("noBtn");
+    const yesBtn = document.getElementById("yesBtn");
 
-noBtn.addEventListener("mouseover", moveButton);
-noBtn.addEventListener("touchstart", moveButton);
+    /* Move NO button */
+    function moveButton() {
+        const x = Math.random() * 160 - 80;
+        const y = Math.random() * 80 - 40;
+        noBtn.style.transform = `translate(${x}px, ${y}px)`;
+    }
 
-/* YES button */
-yesBtn.addEventListener("click", () => {
+    noBtn.addEventListener("mouseover", moveButton);
+    noBtn.addEventListener("touchstart", moveButton);
 
-    yesBtn.disabled = true;
+    /* YES button click */
+    yesBtn.addEventListener("click", function() {
 
-    // Google Analytics event
-    gtag('event', 'yes_clicked', {
-        event_category: 'interaction',
-        event_label: 'Balloon Page'
+        yesBtn.disabled = true;
+
+        /* Safe Google Analytics */
+        if (typeof gtag === "function") {
+            gtag('event', 'yes_clicked', {
+                event_category: 'interaction',
+                event_label: 'Balloon Page'
+            });
+        }
+
+        const templateParams = {
+            name: "Balloon Page",
+            title: "YES Button Clicked 💖",
+            email: "notification@balloon.page",
+            time: new Date().toLocaleString()
+        };
+
+        /* Send email but DO NOT block redirect */
+        emailjs.send(
+            "service_sax9tgk",
+            "template_za0vc1o",
+            templateParams
+        )
+        .catch(function(error) {
+            console.error("Email failed:", error);
+        });
+
+        /* Always redirect after small delay */
+        setTimeout(function() {
+            window.location.href = "hey.html";
+        }, 500);
     });
 
-    const templateParams = {
-        name: "Balloon Page",
-        title: "YES Button Clicked 💖",
-        email: "notification@balloon.page",
-        time: new Date().toLocaleString()
-    };
-
-    // Send Email (but NEVER block redirect)
-    emailjs.send(
-        "service_sax9tgk",     // 🔴 Replace with your service ID
-        "template_za0vc1o",    // 🔴 Replace with your template ID
-        templateParams
-    )
-    .then(() => {
-        console.log("Email sent successfully");
-    })
-    .catch((error) => {
-        console.error("Email failed:", error);
-    })
-    .finally(() => {
-        // Always redirect
-        window.location.href = "hey.html";
-    });
 });
 </script>
 
