@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Thank You 💖</title>
+<title>Scroll Letter 💌</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
@@ -12,183 +12,124 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    background: #ffffff;
+    background: #f5f5f5;
     font-family: 'Segoe UI', sans-serif;
 }
 
-/* Thank You Box */
-.thankyou-box {
-    text-align: center;
-    background: rgba(255,255,255,0.98);
-    padding: 30px 22px;
-    border-radius: 22px;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-    max-width: 400px;
-}
+/* ===== IMPORTANT =====
+   Put your scroll image inside:
+   Images/scroll.png
+   ==================== */
 
-.thankyou-box img {
-    width: 170px;
-    margin-bottom: 15px;
-}
-
-h1 {
-    margin: 10px 0;
-    color: #ff69b4;
-}
-
-p {
-    color: #444;
-    line-height: 1.6;
-    font-size: 15px;
-}
-
-/* ================= SCROLL ================= */
-
-.scroll-wrapper {
-    width: 260px;
-    margin: 25px auto 0;
+/* Container */
+.scroll-container {
+    position: relative;
+    width: 320px;
+    height: 520px;
     cursor: pointer;
-    position: relative;
 }
 
-/* Top Roll */
-.top-roll {
-    height: 40px;
-    background: linear-gradient(to bottom,#d6b27a,#a97c4c);
-    border-radius: 30px;
-    box-shadow: 0 8px 15px rgba(0,0,0,0.3);
-    z-index: 2;
-    position: relative;
-}
-
-/* Ribbon */
-.ribbon {
+/* Closed Scroll */
+.scroll-closed {
     position: absolute;
-    width: 120px;
-    height: 20px;
-    background: crimson;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    border-radius: 4px;
-    z-index: 3;
-    transition: opacity 0.5s ease;
+    inset: 0;
+    background-image: url('Images/scroll.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    transition: opacity 0.6s ease;
 }
 
-/* Paper */
-.scroll-paper {
-    width: 100%;
-    height: 0;
+/* Mask */
+.scroll-mask {
+    position: absolute;
+    inset: 0;
     overflow: hidden;
-    background: url('Images/vintage_letter.png') no-repeat center/cover;
-    transition: height 2s cubic-bezier(.77,0,.18,1);
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
-    padding: 0 15px;
-    box-sizing: border-box;
-}
-
-/* Text */
-.scroll-content {
     opacity: 0;
-    padding: 20px 5px;
-    transition: opacity 1s ease 1s;
 }
 
-/* Bottom Roll */
-.bottom-roll {
-    height: 40px;
-    background: linear-gradient(to top,#d6b27a,#a97c4c);
-    border-radius: 30px;
-    box-shadow: 0 -8px 15px rgba(0,0,0,0.3);
+/* Paper (ONLY IMAGE – NO TEXT INSIDE) */
+.scroll-paper {
+    position: absolute;
+    inset: 0;
+    background-image: url('Images/scroll.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    transform: translateY(-100%);
 }
 
-/* OPEN STATE */
-.scroll-wrapper.open .scroll-paper {
-    height: 240px;
+/* OPEN */
+.scroll-container.open .scroll-closed {
+    opacity: 0;
 }
 
-.scroll-wrapper.open .scroll-content {
+.scroll-container.open .scroll-mask {
     opacity: 1;
 }
 
-.scroll-wrapper.open .ribbon {
-    opacity: 0;
+.scroll-container.open .scroll-paper {
+    animation: unroll 2.4s ease forwards;
 }
 
-/* Close animation smoother */
-.scroll-wrapper.closing .scroll-paper {
-    height: 0;
+.scroll-container.closing .scroll-paper {
+    animation: rollBack 2s ease forwards;
 }
 
-@media (max-width: 480px) {
-    .scroll-wrapper { width: 220px; }
+@keyframes unroll {
+    0% { transform: translateY(-100%); }
+    30% { transform: translateY(-70%); }
+    60% { transform: translateY(-40%); }
+    80% { transform: translateY(-15%); }
+    100% { transform: translateY(0); }
 }
+
+@keyframes rollBack {
+    0% { transform: translateY(0); }
+    30% { transform: translateY(-20%); }
+    60% { transform: translateY(-50%); }
+    80% { transform: translateY(-75%); }
+    100% { transform: translateY(-100%); }
+}
+
 </style>
 </head>
 
 <body>
 
-<div class="thankyou-box">
+<div class="scroll-container" onclick="toggleScroll()">
+    <div class="scroll-closed"></div>
 
-    <img src="Images/balloon.png">
-
-    <h1>Thank You 💕</h1>
-
-    <p>
-        Your answer made this balloon very happy 🎈  
-        I truly appreciate your response.
-    </p>
-
-    <!-- SCROLL -->
-    <div class="scroll-wrapper" id="scroll">
-        <div class="ribbon"></div>
-        <div class="top-roll"></div>
-
-        <div class="scroll-paper">
-            <div class="scroll-content">
-                <h3 style="margin:0;color:#ff69b4;">A Special Note 💌</h3>
-                <p style="font-size:14px;">
-                    You mean a lot to me.<br><br>
-                    Thank you for being amazing ❤️<br><br>
-                    This letter was waiting just for you.
-                </p>
-            </div>
-        </div>
-
-        <div class="bottom-roll"></div>
+    <div class="scroll-mask">
+        <div class="scroll-paper"></div>
     </div>
-
 </div>
 
-<!-- MUSIC -->
 <audio id="bgm" loop>
     <source src="Audio/bgm.mp3" type="audio/mpeg">
 </audio>
 
 <script>
-const scroll = document.getElementById("scroll");
-const bgm = document.getElementById("bgm");
-bgm.volume = 0.3;
+const container = document.querySelector('.scroll-container');
+const bgm = document.getElementById('bgm');
 
 let isOpen = false;
 
-scroll.addEventListener("click", function() {
-
+function toggleScroll(){
     if(!isOpen){
-        scroll.classList.remove("closing");
-        scroll.classList.add("open");
+        container.classList.remove('closing');
+        container.classList.add('open');
+        bgm.currentTime = 0;
         bgm.play().catch(()=>{});
         isOpen = true;
     } else {
-        scroll.classList.remove("open");
-        scroll.classList.add("closing");
+        container.classList.remove('open');
+        container.classList.add('closing');
         bgm.pause();
         bgm.currentTime = 0;
         isOpen = false;
     }
-
-});
+}
 </script>
 
 </body>
