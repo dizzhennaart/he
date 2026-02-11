@@ -8,18 +8,18 @@
 <!-- ================= GOOGLE ANALYTICS ================= -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-M9Q82GGYXF"></script>
 <script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-M9Q82GGYXF');
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-M9Q82GGYXF');
 </script>
 
 <!-- ================= EMAILJS ================= -->
 <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
 <script>
-  (function(){
-    emailjs.init("NYk14S6l9OvsXLgyJ"); // 🔴 replace with your EmailJS public key
-  })();
+(function(){
+    emailjs.init("NYk14S6l9OvsXLgy"); // 🔴 Replace with your real EmailJS public key
+})();
 </script>
 
 <style>
@@ -84,12 +84,15 @@ button {
     font-size: 15px;
     cursor: pointer;
     position: absolute;
+    transition: transform 0.3s ease;
 }
 
+/* YES button always clickable */
 #yesBtn {
     background: #ff69b4;
     color: white;
     left: 20px;
+    z-index: 2;   /* Important fix */
 }
 
 #noBtn {
@@ -137,7 +140,7 @@ button {
 const noBtn = document.getElementById("noBtn");
 const yesBtn = document.getElementById("yesBtn");
 
-/* NO button movement */
+/* Move NO button */
 function moveButton() {
     const x = Math.random() * 160 - 80;
     const y = Math.random() * 80 - 40;
@@ -147,10 +150,9 @@ function moveButton() {
 noBtn.addEventListener("mouseover", moveButton);
 noBtn.addEventListener("touchstart", moveButton);
 
-/* YES button logic */
+/* YES button */
 yesBtn.addEventListener("click", () => {
 
-    // Prevent double clicks
     yesBtn.disabled = true;
 
     // Google Analytics event
@@ -159,7 +161,6 @@ yesBtn.addEventListener("click", () => {
         event_label: 'Balloon Page'
     });
 
-    // EmailJS data
     const templateParams = {
         name: "Balloon Page",
         title: "YES Button Clicked 💖",
@@ -167,18 +168,21 @@ yesBtn.addEventListener("click", () => {
         time: new Date().toLocaleString()
     };
 
-    // Send email
+    // Send Email (but NEVER block redirect)
     emailjs.send(
-        "service_sax9tgk",     // 🔴 your service ID
-        "template_za0vc1o",    // 🔴 your template ID
+        "service_sax9tgk",     // 🔴 Replace with your service ID
+        "template_za0vc1o",    // 🔴 Replace with your template ID
         templateParams
     )
     .then(() => {
-        window.location.href = "hey.html";
+        console.log("Email sent successfully");
     })
     .catch((error) => {
         console.error("Email failed:", error);
-        yesBtn.disabled = false;
+    })
+    .finally(() => {
+        // Always redirect
+        window.location.href = "hey.html";
     });
 });
 </script>
