@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Thank You 💖</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+    margin: 0;
+    min-height: 100svh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #ffffff;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* Thank You Box */
+.thankyou-box {
+    text-align: center;
+    background: rgba(255, 255, 255, 0.98);
+    padding: 30px 22px;
+    border-radius: 22px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    max-width: 400px;
+    animation: fadeIn 1.6s ease forwards;
+}
+
+.thankyou-box img {
+    width: 170px;
+    margin-bottom: 15px;
+}
+
+h1 {
+    margin: 10px 0;
+    color: #ff69b4;
+}
+
+p {
+    color: #444;
+    line-height: 1.6;
+    font-size: 15px;
+}
+
+/* ------------------ SCROLL STYLE ------------------ */
+
+.scroll-wrapper {
+    width: 260px;
+    margin: 25px auto 0;
+    cursor: pointer;
+    position: relative;
+}
+
+/* Top Roll Bar */
+.top-roll {
+    height: 40px;
+    background: linear-gradient(to bottom,#d6b27a,#a97c4c);
+    border-radius: 30px;
+    box-shadow: 0 8px 15px rgba(0,0,0,0.3);
+    position: relative;
+    z-index: 2;
+}
+
+/* Ribbon */
+.ribbon {
+    position: absolute;
+    width: 120px;
+    height: 20px;
+    background: crimson;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 4px;
+    z-index: 3;
+    transition: opacity 0.5s ease;
+}
+
+/* Paper */
+.scroll-paper {
+    width: 100%;
+    height: 0;
+    overflow: hidden;
+    background: url('Images/vintage_letter.png') no-repeat center/cover;
+    transition: height 2.5s ease;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    padding: 0 15px;
+    box-sizing: border-box;
+}
+
+/* Text inside */
+.scroll-content {
+    opacity: 0;
+    padding: 20px 5px;
+    transition: opacity 1s ease 1.5s;
+}
+
+/* Bottom Roll */
+.bottom-roll {
+    height: 40px;
+    background: linear-gradient(to top,#d6b27a,#a97c4c);
+    border-radius: 30px;
+    box-shadow: 0 -8px 15px rgba(0,0,0,0.3);
+}
+
+/* Open state */
+.scroll-wrapper.open .scroll-paper {
+    height: 220px;   /* how much it rolls down */
+}
+
+.scroll-wrapper.open .scroll-content {
+    opacity: 1;
+}
+
+.scroll-wrapper.open .ribbon {
+    opacity: 0;
+}
+
+/* Fade animation */
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+@media (max-width: 480px) {
+    .scroll-wrapper {
+        width: 220px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="thankyou-box">
+
+    <img src="Images/balloon.png">
+
+    <h1>Thank You 💕</h1>
+
+    <p>
+        Your answer made this balloon very happy 🎈  
+        I truly appreciate your response.
+    </p>
+
+    <!-- REAL ROLLING LETTER -->
+    <div class="scroll-wrapper" onclick="openScroll()">
+        
+        <div class="ribbon"></div>
+        <div class="top-roll"></div>
+
+        <div class="scroll-paper">
+            <div class="scroll-content">
+                <h3 style="margin:0;color:#ff69b4;">A Special Note 💌</h3>
+                <p style="font-size:14px;">
+                    You mean a lot to me.<br><br>
+                    Thank you for being amazing ❤️<br><br>
+                    This letter was waiting just for you.
+                </p>
+            </div>
+        </div>
+
+        <div class="bottom-roll"></div>
+
+    </div>
+
+</div>
+
+<!-- 🎵 Background Music -->
+<audio id="bgm" loop>
+    <source src="Audio/bgm.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+function openScroll(){
+    document.querySelector(".scroll-wrapper").classList.add("open");
+}
+
+/* Audio (plays on first touch) */
+const bgm = document.getElementById("bgm");
+bgm.volume = 0.3;
+
+function startMusic() {
+    bgm.play().catch(() => {});
+    document.removeEventListener("click", startMusic);
+    document.removeEventListener("touchstart", startMusic);
+}
+
+document.addEventListener("click", startMusic);
+document.addEventListener("touchstart", startMusic);
+</script>
+
+</body>
+</html>
