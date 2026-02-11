@@ -19,12 +19,11 @@ body {
 /* Thank You Box */
 .thankyou-box {
     text-align: center;
-    background: rgba(255, 255, 255, 0.98);
+    background: rgba(255,255,255,0.98);
     padding: 30px 22px;
     border-radius: 22px;
     box-shadow: 0 20px 40px rgba(0,0,0,0.15);
     max-width: 400px;
-    animation: fadeIn 1.6s ease forwards;
 }
 
 .thankyou-box img {
@@ -43,7 +42,7 @@ p {
     font-size: 15px;
 }
 
-/* ------------------ SCROLL STYLE ------------------ */
+/* ================= SCROLL ================= */
 
 .scroll-wrapper {
     width: 260px;
@@ -52,14 +51,14 @@ p {
     position: relative;
 }
 
-/* Top Roll Bar */
+/* Top Roll */
 .top-roll {
     height: 40px;
     background: linear-gradient(to bottom,#d6b27a,#a97c4c);
     border-radius: 30px;
     box-shadow: 0 8px 15px rgba(0,0,0,0.3);
-    position: relative;
     z-index: 2;
+    position: relative;
 }
 
 /* Ribbon */
@@ -82,18 +81,18 @@ p {
     height: 0;
     overflow: hidden;
     background: url('Images/vintage_letter.png') no-repeat center/cover;
-    transition: height 2.5s ease;
+    transition: height 2s cubic-bezier(.77,0,.18,1);
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
     padding: 0 15px;
     box-sizing: border-box;
 }
 
-/* Text inside */
+/* Text */
 .scroll-content {
     opacity: 0;
     padding: 20px 5px;
-    transition: opacity 1s ease 1.5s;
+    transition: opacity 1s ease 1s;
 }
 
 /* Bottom Roll */
@@ -104,9 +103,9 @@ p {
     box-shadow: 0 -8px 15px rgba(0,0,0,0.3);
 }
 
-/* Open state */
+/* OPEN STATE */
 .scroll-wrapper.open .scroll-paper {
-    height: 220px;   /* how much it rolls down */
+    height: 240px;
 }
 
 .scroll-wrapper.open .scroll-content {
@@ -117,16 +116,13 @@ p {
     opacity: 0;
 }
 
-/* Fade animation */
-@keyframes fadeIn {
-    from { opacity: 0; transform: scale(0.9); }
-    to { opacity: 1; transform: scale(1); }
+/* Close animation smoother */
+.scroll-wrapper.closing .scroll-paper {
+    height: 0;
 }
 
 @media (max-width: 480px) {
-    .scroll-wrapper {
-        width: 220px;
-    }
+    .scroll-wrapper { width: 220px; }
 }
 </style>
 </head>
@@ -144,9 +140,8 @@ p {
         I truly appreciate your response.
     </p>
 
-    <!-- REAL ROLLING LETTER -->
-    <div class="scroll-wrapper" onclick="openScroll()">
-        
+    <!-- SCROLL -->
+    <div class="scroll-wrapper" id="scroll">
         <div class="ribbon"></div>
         <div class="top-roll"></div>
 
@@ -162,33 +157,38 @@ p {
         </div>
 
         <div class="bottom-roll"></div>
-
     </div>
 
 </div>
 
-<!-- 🎵 Background Music -->
+<!-- MUSIC -->
 <audio id="bgm" loop>
     <source src="Audio/bgm.mp3" type="audio/mpeg">
 </audio>
 
 <script>
-function openScroll(){
-    document.querySelector(".scroll-wrapper").classList.add("open");
-}
-
-/* Audio (plays on first touch) */
+const scroll = document.getElementById("scroll");
 const bgm = document.getElementById("bgm");
 bgm.volume = 0.3;
 
-function startMusic() {
-    bgm.play().catch(() => {});
-    document.removeEventListener("click", startMusic);
-    document.removeEventListener("touchstart", startMusic);
-}
+let isOpen = false;
 
-document.addEventListener("click", startMusic);
-document.addEventListener("touchstart", startMusic);
+scroll.addEventListener("click", function() {
+
+    if(!isOpen){
+        scroll.classList.remove("closing");
+        scroll.classList.add("open");
+        bgm.play().catch(()=>{});
+        isOpen = true;
+    } else {
+        scroll.classList.remove("open");
+        scroll.classList.add("closing");
+        bgm.pause();
+        bgm.currentTime = 0;
+        isOpen = false;
+    }
+
+});
 </script>
 
 </body>
