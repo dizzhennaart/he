@@ -2,108 +2,206 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Scroll Letter 💌</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Special Letter 💌</title>
 
 <style>
-body {
-    margin: 0;
-    min-height: 100svh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: #ffffff;
-    font-family: 'Segoe UI', sans-serif;
+body{
+    margin:0;
+    height:100vh;
+    background:url("Images/background.jpg") center/cover no-repeat;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-family:Segoe UI, sans-serif;
+    overflow:hidden;
 }
 
-/* Container */
-.scroll-container {
-    position: relative;
-    width: 320px;
-    height: 520px;
-    cursor: pointer;
+/* Floating animation */
+@keyframes float {
+    0%{ transform:translateY(0px);}
+    50%{ transform:translateY(-15px);}
+    100%{ transform:translateY(0px);}
 }
 
-/* Closed Scroll (Full Image Look) */
-.scroll-closed {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background: url('Images/vintage_letter.png') no-repeat center/contain;
-    transition: opacity 0.6s ease;
+.main-box{
+    text-align:center;
+    animation:float 4s ease-in-out infinite;
 }
 
-/* Scroll Mask */
-.scroll-mask {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    opacity: 0;
+/* Balloon */
+.balloon img{
+    width:120px;
 }
 
-/* Scroll Paper (Unrolling Content Area) */
-.scroll-paper {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background: url('Images/vintage_letter.png') no-repeat center/contain;
-    transform: translateY(-100%);
+/* Content box */
+.content-box{
+    background:rgba(255,255,255,0.95);
+    padding:20px;
+    border-radius:20px;
+    margin-top:10px;
+    box-shadow:0 15px 30px rgba(0,0,0,0.25);
+    width:320px;
 }
 
-/* Text Content */
-.scroll-text {
-    position: absolute;
-    top: 120px;
-    left: 40px;
-    right: 40px;
-    text-align: center;
-    color: #5a2d0c;
+/* Scroll container */
+.scroll-container{
+    position:relative;
+    width:200px;
+    height:350px;
+    margin:20px auto;
+    cursor:pointer;
+    overflow:hidden;
 }
 
-/* OPEN STATE */
-.scroll-container.open .scroll-closed {
-    opacity: 0;
+/* Rotate horizontal image to vertical */
+.scroll-img{
+    position:absolute;
+    width:100%;
+    height:100%;
+    background:url("Images/vintage_letter.png") center/contain no-repeat;
+    transform:rotate(90deg);
+    transform-origin:center;
 }
 
-.scroll-container.open .scroll-mask {
-    opacity: 1;
+/* Paper content */
+.scroll-paper{
+    position:absolute;
+    width:100%;
+    height:100%;
+    background:url("Images/vintage_letter.png") center/contain no-repeat;
+    transform:rotate(90deg) translateY(-100%);
+    transform-origin:center;
 }
 
-.scroll-container.open .scroll-paper {
-    animation: unroll 2.5s ease forwards;
+.scroll-text{
+    position:absolute;
+    top:90px;
+    left:20px;
+    right:20px;
+    text-align:center;
+    font-size:14px;
+    color:#5a2d0c;
+    transform:rotate(90deg);
 }
 
-.scroll-container.closing .scroll-paper {
-    animation: rollBack 2s ease forwards;
+/* Open animation */
+.open .scroll-paper{
+    animation:unroll 2s forwards;
 }
 
-@keyframes unroll {
-    0% { transform: translateY(-100%); }
-    25% { transform: translateY(-70%); }
-    50% { transform: translateY(-40%); }
-    75% { transform: translateY(-15%); }
-    100% { transform: translateY(0%); }
+@keyframes unroll{
+    from{ transform:rotate(90deg) translateY(-100%);}
+    to{ transform:rotate(90deg) translateY(0%);}
 }
 
-@keyframes rollBack {
-    0% { transform: translateY(0%); }
-    25% { transform: translateY(-20%); }
-    50% { transform: translateY(-45%); }
-    75% { transform: translateY(-70%); }
-    100% { transform: translateY(-100%); }
+/* Close animation */
+.close .scroll-paper{
+    animation:rollup 2s forwards;
 }
 
+@keyframes rollup{
+    from{ transform:rotate(90deg) translateY(0%);}
+    to{ transform:rotate(90deg) translateY(-100%);}
+}
+
+/* Confetti */
+.confetti{
+    position:fixed;
+    width:8px;
+    height:12px;
+    background:red;
+    top:-10px;
+    animation:fall 3s linear forwards;
+}
+
+@keyframes fall{
+    to{
+        transform:translateY(100vh) rotate(360deg);
+        opacity:0;
+    }
+}
 </style>
 </head>
 
 <body>
 
-<div class="scroll-container" onclick="toggleScroll()">
-    <div class="scroll-closed"></div>
+<div class="main-box">
 
-    <div class="scroll-mask">
-        <div class="scroll-paper"></div>
+    <div class="balloon">
+        <img src="Images/balloon.png">
+    </div>
+
+    <div class="content-box">
+        <h3>For You 💖</h3>
+
+        <div class="scroll-container" id="scroll">
+            <div class="scroll-img"></div>
+            <div class="scroll-paper"></div>
+
+            <div class="scroll-text">
+                <h4>My Special Letter 💌</h4>
+                <p>
+                    This message appears as the scroll opens.
+                    You can write anything beautiful here.
+                </p>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<audio id="bgm" src="Audio/bgm.mp3"></audio>
+
+<script>
+const scroll = document.getElementById("scroll");
+const bgm = document.getElementById("bgm");
+let opened = false;
+let confettiDone = false;
+
+scroll.addEventListener("click", function(){
+
+    if(!opened){
+        scroll.classList.remove("close");
+        scroll.classList.add("open");
+        bgm.currentTime = 0;
+        bgm.play();
+
+        if(!confettiDone){
+            createConfetti();
+            confettiDone = true;
+        }
+
+        opened = true;
+    }else{
+        scroll.classList.remove("open");
+        scroll.classList.add("close");
+        bgm.pause();
+        bgm.currentTime = 0;
+        opened = false;
+    }
+
+});
+
+/* Confetti function */
+function createConfetti(){
+    for(let i=0;i<40;i++){
+        let conf = document.createElement("div");
+        conf.className="confetti";
+        conf.style.left=Math.random()*100+"vw";
+        conf.style.backgroundColor=
+            ["red","blue","yellow","green","pink","orange"][Math.floor(Math.random()*6)];
+        conf.style.animationDuration=(2+Math.random()*2)+"s";
+        document.body.appendChild(conf);
+
+        setTimeout(()=>{conf.remove();},4000);
+    }
+}
+</script>
+
+</body>
+</html>
         <div class="scroll-text">
             <h2>Your Letter Title 💌</h2>
             <p>
