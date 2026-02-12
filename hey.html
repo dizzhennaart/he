@@ -3,20 +3,34 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Balloon Surprise</title>
+<title>Romantic Balloon Surprise</title>
 
 <style>
 body{
     margin:0;
     font-family:Arial, sans-serif;
-    background:#ffffff;
     overflow:hidden;
+    background:radial-gradient(circle at top, #ffe6f0, #ffffff 70%);
 }
 
-/* WRAPPER (Balloon + Box Together) */
+/* SOFT GLOW BACKGROUND */
+body::before{
+    content:"";
+    position:fixed;
+    width:300px;
+    height:300px;
+    background:rgba(255,100,150,0.3);
+    border-radius:50%;
+    filter:blur(120px);
+    top:-100px;
+    left:50%;
+    transform:translateX(-50%);
+}
+
+/* WRAPPER */
 .wrapper{
     position:fixed;
-    bottom:-500px; /* start below screen */
+    bottom:-500px;
     left:50%;
     transform:translateX(-50%);
     display:flex;
@@ -25,29 +39,33 @@ body{
     animation:riseUp 3s ease forwards;
 }
 
+/* AFTER RISE FLOATING */
+.wrapper.float{
+    animation:float 3s ease-in-out infinite alternate;
+}
+
 /* BALLOON */
 .balloon img{
-    width:180px;   /* balloon slightly bigger */
+    width:180px;
 }
 
 /* STRING */
 .string{
     width:2px;
     height:50px;
-    background:#555;
+    background:#888;
 }
 
-/* CONTENT BOX */
+/* CONTENT */
 .content{
-    width:170px;   /* slightly smaller than balloon */
+    width:170px;
     background:#fff;
     padding:12px;
     border-radius:15px;
-    box-shadow:0 8px 20px rgba(0,0,0,0.2);
+    box-shadow:0 8px 25px rgba(255,0,100,0.2);
     text-align:center;
 }
 
-/* VIDEO */
 video{
     width:100%;
     border-radius:10px;
@@ -55,36 +73,61 @@ video{
     cursor:pointer;
 }
 
-/* RISE ANIMATION */
+/* RISE */
 @keyframes riseUp{
-    0%{
-        bottom:-500px;
+    0%{ bottom:-500px; opacity:0; }
+    100%{ bottom:15%; opacity:1; }
+}
+
+/* FLOAT */
+@keyframes float{
+    from{ transform:translate(-50%, 0px); }
+    to{ transform:translate(-50%, -15px); }
+}
+
+/* HEART CONFETTI */
+.heart{
+    position:fixed;
+    font-size:20px;
+    animation:fall linear forwards;
+}
+
+@keyframes fall{
+    to{
+        transform:translateY(100vh);
         opacity:0;
-    }
-    100%{
-        bottom:15%;
-        opacity:1;
     }
 }
 
-/* MOBILE ADJUSTMENT */
-@media(max-width:600px){
-    .balloon img{
-        width:190px;
-    }
+/* BURST PARTICLES */
+.burst{
+    position:fixed;
+    width:8px;
+    height:8px;
+    background:pink;
+    border-radius:50%;
+    animation:burstAnim 1s ease-out forwards;
+}
 
-    .content{
-        width:175px;
+@keyframes burstAnim{
+    to{
+        transform:translate(var(--x), var(--y));
+        opacity:0;
     }
+}
+
+@media(max-width:600px){
+    .balloon img{ width:190px; }
+    .content{ width:175px; }
 }
 </style>
 </head>
 <body>
 
-<div class="wrapper">
+<div class="wrapper" id="wrapper">
 
     <div class="balloon">
-        <img src="Images/balloon.png" alt="Balloon">
+        <img src="balloon.png" id="balloonImg">
     </div>
 
     <div class="string"></div>
@@ -93,7 +136,7 @@ video{
         <h3>For You ❤️</h3>
         <p>My Special Message 💌</p>
 
-        <video id="myVideo" muted playsinline>
+        <video id="myVideo" muted playsinline loop>
             <source src="scroll.mp4" type="video/mp4">
         </video>
     </div>
@@ -106,8 +149,51 @@ video{
 
 const video = document.getElementById("myVideo");
 const music = document.getElementById("bgMusic");
+const wrapper = document.getElementById("wrapper");
+const balloon = document.getElementById("balloonImg");
 
-/* Video + Music Control */
+/* After rise complete, start floating */
+setTimeout(()=>{
+    wrapper.classList.add("float");
+},3000);
+
+/* Romantic Heart Confetti */
+function heartsRain(){
+    for(let i=0;i<25;i++){
+        let heart = document.createElement("div");
+        heart.className="heart";
+        heart.innerHTML="💖";
+        heart.style.left=Math.random()*100+"vw";
+        heart.style.animationDuration=(3+Math.random()*2)+"s";
+        document.body.appendChild(heart);
+
+        setTimeout(()=>{ heart.remove(); },5000);
+    }
+}
+
+/* Confetti Burst From Balloon */
+function balloonBurst(){
+    const rect = balloon.getBoundingClientRect();
+    const centerX = rect.left + rect.width/2;
+    const centerY = rect.top + rect.height/2;
+
+    for(let i=0;i<20;i++){
+        let particle=document.createElement("div");
+        particle.className="burst";
+        particle.style.left=centerX+"px";
+        particle.style.top=centerY+"px";
+
+        let x=(Math.random()-0.5)*200+"px";
+        let y=(Math.random()-0.5)*200+"px";
+        particle.style.setProperty("--x", x);
+        particle.style.setProperty("--y", y);
+
+        document.body.appendChild(particle);
+        setTimeout(()=>particle.remove(),1000);
+    }
+}
+
+/* CLICK CONTROL */
 video.addEventListener("click", async function(){
 
     if(video.paused){
@@ -115,8 +201,12 @@ video.addEventListener("click", async function(){
             await video.play();
             music.currentTime = 0;
             await music.play();
+
+            heartsRain();
+            balloonBurst();
+
         }catch(err){
-            console.log("Playback error:", err);
+            console.log(err);
         }
     }else{
         video.pause();
