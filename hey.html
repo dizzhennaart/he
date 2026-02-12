@@ -12,22 +12,33 @@ body{
     background:#fff;
 }
 
-/* SINGLE BALLOON */
+/* BALLOON CONTAINER */
 .top-balloon{
-    width:100%;
-    text-align:center;
-    margin-top:20px;
+    position:fixed;
+    bottom:-200px;   /* start below screen */
+    left:50%;
+    transform:translateX(-50%);
+    animation:balloonUp 3s ease forwards;
+    z-index:10;
 }
 
+/* BIGGER BALLOON */
 .top-balloon img{
-    width:80px;
-    animation:floatBalloon 3s ease-in-out infinite alternate;
+    width:150px;   /* 🔥 increase size here */
 }
 
-@keyframes floatBalloon{
-    from{ transform:translateY(0px); }
-    to{ transform:translateY(15px); }
+/* FLOAT FROM BOTTOM TO TOP */
+@keyframes balloonUp{
+    0%{
+        bottom:-200px;
+        opacity:0;
+    }
+    100%{
+        bottom:75%;
+        opacity:1;
+    }
 }
+
 
 /* CONTENT BOX */
 .content{
