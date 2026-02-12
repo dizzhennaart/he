@@ -10,45 +10,30 @@ body{
     margin:0;
     font-family:Arial, sans-serif;
     background:#fff;
-    overflow:hidden;
 }
 
-/* BALLOONS */
-.balloons{
-    position:fixed;
-    bottom:-150px;
+/* SINGLE BALLOON */
+.top-balloon{
     width:100%;
-    display:flex;
-    justify-content:center;
-    gap:15px;
-    animation:floatUp 3s ease forwards;
+    text-align:center;
+    margin-top:20px;
 }
 
-.balloon{
-    width:40px;
-    height:55px;
-    border-radius:50%;
-    background:red;
-    position:relative;
+.top-balloon img{
+    width:80px;
+    animation:floatBalloon 3s ease-in-out infinite alternate;
 }
 
-.balloon:nth-child(2){ background:blue; }
-.balloon:nth-child(3){ background:green; }
-.balloon:nth-child(4){ background:orange; }
-
-@keyframes floatUp{
-    0%{bottom:-150px; opacity:0;}
-    100%{bottom:70%; opacity:1;}
+@keyframes floatBalloon{
+    from{ transform:translateY(0px); }
+    to{ transform:translateY(15px); }
 }
 
 /* CONTENT BOX */
 .content{
-    position:absolute;
-    top:55%;
-    left:50%;
-    transform:translate(-50%,-50%);
     width:90%;
     max-width:400px;
+    margin:20px auto;
     background:rgba(255,255,255,0.95);
     padding:20px;
     border-radius:20px;
@@ -60,7 +45,6 @@ body{
 
 .content.show{
     opacity:1;
-    top:50%;
 }
 
 /* VIDEO */
@@ -76,12 +60,14 @@ video{
     position:fixed;
     width:8px;
     height:8px;
-    background:red;
-    top:-10px;
-    animation:fall 4s linear infinite;
+    top:0;
+    animation:fall linear forwards;
 }
 
 @keyframes fall{
+    from{
+        transform:translateY(0);
+    }
     to{
         transform:translateY(100vh) rotate(360deg);
     }
@@ -98,12 +84,9 @@ video{
 </head>
 <body>
 
-<!-- BALLOONS -->
-<div class="balloons">
-    <div class="balloon"></div>
-    <div class="balloon"></div>
-    <div class="balloon"></div>
-    <div class="balloon"></div>
+<!-- SINGLE BALLOON -->
+<div class="top-balloon">
+    <img src="balloon.png" alt="Balloon">
 </div>
 
 <!-- CONTENT -->
@@ -111,7 +94,7 @@ video{
     <h2>For You ❤️</h2>
     <p>My Special Message Just For You 💌</p>
 
-    <video id="myVideo" muted>
+    <video id="myVideo" muted playsinline>
         <source src="scroll.mp4" type="video/mp4">
     </video>
 </div>
@@ -121,10 +104,10 @@ video{
 
 <script>
 
-/* Show content after balloons */
+/* Show content after 2 seconds */
 setTimeout(()=>{
     document.getElementById("contentBox").classList.add("show");
-},3000);
+},2000);
 
 /* Video + Music Control */
 const video = document.getElementById("myVideo");
@@ -143,15 +126,22 @@ video.addEventListener("click", function(){
 
 });
 
-/* Minimal Confetti */
-for(let i=0;i<15;i++){
-    let conf = document.createElement("div");
-    conf.className="confetti";
-    conf.style.left=Math.random()*100+"vw";
-    conf.style.background=["red","blue","green","orange","pink"][Math.floor(Math.random()*5)];
-    conf.style.animationDuration= (3+Math.random()*2)+"s";
-    document.body.appendChild(conf);
+/* Minimal Confetti from Top */
+function createConfetti(){
+    for(let i=0;i<20;i++){
+        let conf = document.createElement("div");
+        conf.className="confetti";
+        conf.style.left=Math.random()*100+"vw";
+        conf.style.background=["red","blue","green","orange","pink"][Math.floor(Math.random()*5)];
+        conf.style.animationDuration=(3+Math.random()*2)+"s";
+        document.body.appendChild(conf);
+
+        setTimeout(()=>{ conf.remove(); },5000);
+    }
 }
+
+/* Launch confetti when video starts */
+video.addEventListener("play", createConfetti);
 
 </script>
 
