@@ -222,9 +222,13 @@ function togglePlay(){
 
     if(video.paused){
 
+        // If song already ended, restart from beginning
+        if(music.ended){
+            music.currentTime = 0;
+        }
+
         video.play();
 
-        music.currentTime = 0;
         music.play().catch(e=>{
             console.log("Music blocked:", e);
         });
@@ -235,12 +239,11 @@ function togglePlay(){
 
         video.pause();
         music.pause();
-        music.currentTime = 0;
 
     }
 }
 
-/* Also allow clicking video */
+/* Allow clicking video also */
 video.addEventListener("click", togglePlay);
 
 </script>
