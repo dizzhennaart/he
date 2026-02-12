@@ -16,50 +16,46 @@ body {
     font-family: 'Segoe UI', sans-serif;
 }
 
-/* ===== IMPORTANT =====
-   Put your scroll image inside:
-   Images/scroll.png
-   ==================== */
-
-/* Container */
 .scroll-container {
     position: relative;
     width: 320px;
     height: 520px;
     cursor: pointer;
+    /* Added a border so you can see where to click if image fails */
+    border: 1px dashed #ccc; 
 }
 
-/* Closed Scroll */
 .scroll-closed {
     position: absolute;
     inset: 0;
-    background-image: url('Images/scroll.png');
+    background-color: #e2c18d; /* Fallback color */
+    background-image: url('Images/vintage_letter.png');
     background-repeat: no-repeat;
     background-position: center;
     background-size: contain;
     transition: opacity 0.6s ease;
+    z-index: 2;
 }
 
-/* Mask */
 .scroll-mask {
     position: absolute;
     inset: 0;
     overflow: hidden;
     opacity: 0;
+    z-index: 1;
 }
 
-/* Paper */
 .scroll-paper {
     position: absolute;
     inset: 0;
-    background-image: url('Images/scroll.png');
+    background-color: #f4e4bc; /* Fallback color */
+    background-image: url('Images/vintage_letter.png');
     background-repeat: no-repeat;
     background-position: center;
     background-size: contain;
     transform: translateY(-100%);
 }
 
-/* Text */
 .scroll-text {
     position: absolute;
     top: 130px;
@@ -67,57 +63,37 @@ body {
     right: 50px;
     text-align: center;
     color: #5a2d0c;
+    z-index: 3;
 }
 
-/* OPEN */
-.scroll-container.open .scroll-closed {
-    opacity: 0;
-}
+/* Logic for States */
+.scroll-container.open .scroll-closed { opacity: 0; pointer-events: none; }
+.scroll-container.open .scroll-mask { opacity: 1; }
+.scroll-container.open .scroll-paper { animation: unroll 2.4s ease forwards; }
 
-.scroll-container.open .scroll-mask {
-    opacity: 1;
-}
-
-.scroll-container.open .scroll-paper {
-    animation: unroll 2.4s ease forwards;
-}
-
-.scroll-container.closing .scroll-paper {
-    animation: rollBack 2s ease forwards;
-}
+.scroll-container.closing .scroll-mask { opacity: 1; }
+.scroll-container.closing .scroll-paper { animation: rollBack 2s ease forwards; }
 
 @keyframes unroll {
     0% { transform: translateY(-100%); }
-    30% { transform: translateY(-70%); }
-    60% { transform: translateY(-40%); }
-    80% { transform: translateY(-15%); }
     100% { transform: translateY(0); }
 }
 
 @keyframes rollBack {
     0% { transform: translateY(0); }
-    30% { transform: translateY(-20%); }
-    60% { transform: translateY(-50%); }
-    80% { transform: translateY(-75%); }
     100% { transform: translateY(-100%); }
 }
-
 </style>
 </head>
-
 <body>
 
 <div class="scroll-container" onclick="toggleScroll()">
     <div class="scroll-closed"></div>
-
     <div class="scroll-mask">
         <div class="scroll-paper"></div>
         <div class="scroll-text">
             <h2>Your Letter Title 💌</h2>
-            <p>
-                Write your special message here.<br>
-                This will appear when scroll opens.
-            </p>
+            <p>Write your special message here.</p>
         </div>
     </div>
 </div>
@@ -129,21 +105,25 @@ body {
 <script>
 const container = document.querySelector('.scroll-container');
 const bgm = document.getElementById('bgm');
-
 let isOpen = false;
 
 function toggleScroll(){
     if(!isOpen){
         container.classList.remove('closing');
         container.classList.add('open');
-        bgm.currentTime = 0;
-        bgm.play().catch(()=>{});
+        // Play audio (browser allows this because it's a click event)
+        bgm.play().catch(e => console.log("Audio play blocked:", e));
         isOpen = true;
     } else {
         container.classList.remove('open');
         container.classList.add('closing');
+        
+        // Wait for animation to finish before showing the 'closed' scroll again
+        setTimeout(() => {
+            if(!isOpen) container.classList.remove('closing');
+        }, 2000);
+
         bgm.pause();
-        bgm.currentTime = 0;
         isOpen = false;
     }
 }
