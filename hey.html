@@ -9,8 +9,10 @@
 body{
     margin:0;
     font-family:Arial, sans-serif;
-    background:#ffffff;
     overflow:hidden;
+
+    /* BACKGROUND IMAGE */
+    background:url("Images/background.jpg") no-repeat center center/cover;
 }
 
 /* WRAPPER */
@@ -37,13 +39,13 @@ body{
     background:#555;
 }
 
-/* CONTENT BOX */
+/* CONTENT */
 .content{
     width:170px;
-    background:#fff;
+    background:rgba(255,255,255,0.95);
     padding:12px;
     border-radius:15px;
-    box-shadow:0 8px 20px rgba(0,0,0,0.2);
+    box-shadow:0 8px 20px rgba(0,0,0,0.3);
     text-align:center;
 }
 
@@ -55,16 +57,10 @@ video{
     cursor:pointer;
 }
 
-/* RISE ANIMATION */
+/* RISE */
 @keyframes riseUp{
-    0%{
-        bottom:-500px;
-        opacity:0;
-    }
-    100%{
-        bottom:15%;
-        opacity:1;
-    }
+    0%{ bottom:-500px; opacity:0; }
+    100%{ bottom:15%; opacity:1; }
 }
 
 /* CONFETTI */
@@ -73,11 +69,16 @@ video{
     width:8px;
     height:12px;
     top:-20px;
+    z-index:999;
     animation:fall linear forwards;
 }
 
 @keyframes fall{
-    to{
+    0%{
+        transform:translateY(0) rotate(0deg);
+        opacity:1;
+    }
+    100%{
         transform:translateY(100vh) rotate(360deg);
         opacity:0;
     }
@@ -85,12 +86,8 @@ video{
 
 /* MOBILE */
 @media(max-width:600px){
-    .balloon img{
-        width:190px;
-    }
-    .content{
-        width:175px;
-    }
+    .balloon img{ width:190px; }
+    .content{ width:175px; }
 }
 </style>
 </head>
@@ -108,7 +105,6 @@ video{
         <h3>For You ❤️</h3>
         <p>My Special Message 💌</p>
 
-        <!-- loop enabled -->
         <video id="myVideo" muted playsinline loop>
             <source src="scroll.mp4" type="video/mp4">
         </video>
@@ -116,42 +112,45 @@ video{
 
 </div>
 
-<audio id="bgMusic" src="Audio/bgm.mp3"></audio>
+<audio id="bgMusic" preload="auto">
+    <source src="bgm.mp3" type="audio/mpeg">
+</audio>
 
 <script>
 
 const video = document.getElementById("myVideo");
 const music = document.getElementById("bgMusic");
 
-/* CONFETTI FUNCTION (Medium Amount) */
+/* CONFETTI */
 function launchConfetti(){
-    for(let i=0;i<35;i++){   // medium amount
+    for(let i=0;i<30;i++){
         let conf = document.createElement("div");
         conf.className="confetti";
         conf.style.left = Math.random()*100 + "vw";
-        conf.style.background = ["red","blue","green","orange","pink","purple"][Math.floor(Math.random()*6)];
-        conf.style.animationDuration = (3 + Math.random()*2) + "s";
+        conf.style.background =
+            ["red","blue","green","orange","pink","purple"]
+            [Math.floor(Math.random()*6)];
+        conf.style.animationDuration =
+            (3 + Math.random()*2) + "s";
+
         document.body.appendChild(conf);
 
-        setTimeout(()=>{
-            conf.remove();
-        },5000);
+        setTimeout(()=>{ conf.remove(); },5000);
     }
 }
 
 /* CLICK CONTROL */
-video.addEventListener("click", async function(){
+video.addEventListener("click", function(){
 
     if(video.paused){
 
-        try{
-            await video.play();
+        video.play().then(()=>{
             music.currentTime = 0;
-            await music.play();
+            music.play();
             launchConfetti();
-        }catch(err){
-            console.log("Playback error:", err);
-        }
+        }).catch(err=>{
+            console.log("Audio blocked:", err);
+        });
 
     }else{
 
@@ -162,7 +161,6 @@ video.addEventListener("click", async function(){
     }
 
 });
-
 </script>
 
 </body>
