@@ -3,265 +3,157 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Special Scroll 💌</title>
+<title>Special Surprise</title>
 
 <style>
 body{
     margin:0;
-    height:100svh;
-    background:url("Images/background.jpg") center/cover no-repeat;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    font-family:Segoe UI, sans-serif;
+    font-family:Arial, sans-serif;
+    background:#fff;
     overflow:hidden;
 }
 
-/* Floating animation */
-@keyframes float {
-    0%{ transform:translateY(0px);}
-    50%{ transform:translateY(-15px);}
-    100%{ transform:translateY(0px);}
-}
-
-.main-box{
-    text-align:center;
-    animation:float 4s ease-in-out infinite;
-    width:95%;
-    max-width:380px;
-}
-
-/* Balloon */
-.balloon img{
-    width:110px;
-}
-
-/* Content box */
-.content-box{
-    background:rgba(255,255,255,0.95);
-    padding:18px;
-    border-radius:20px;
-    margin-top:10px;
-    box-shadow:0 15px 30px rgba(0,0,0,0.25);
-}
-
-/* Scroll container */
-.scroll-container{
+/* BALLOONS */
+.balloons{
+    position:fixed;
+    bottom:-150px;
     width:100%;
+    display:flex;
+    justify-content:center;
+    gap:15px;
+    animation:floatUp 3s ease forwards;
+}
+
+.balloon{
+    width:40px;
+    height:55px;
+    border-radius:50%;
+    background:red;
+    position:relative;
+}
+
+.balloon:nth-child(2){ background:blue; }
+.balloon:nth-child(3){ background:green; }
+.balloon:nth-child(4){ background:orange; }
+
+@keyframes floatUp{
+    0%{bottom:-150px; opacity:0;}
+    100%{bottom:70%; opacity:1;}
+}
+
+/* CONTENT BOX */
+.content{
+    position:absolute;
+    top:55%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    width:90%;
+    max-width:400px;
+    background:rgba(255,255,255,0.95);
+    padding:20px;
+    border-radius:20px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.2);
+    text-align:center;
+    opacity:0;
+    transition:1s ease;
+}
+
+.content.show{
+    opacity:1;
+    top:50%;
+}
+
+/* VIDEO */
+video{
+    width:100%;
+    border-radius:15px;
     margin-top:15px;
     cursor:pointer;
 }
 
-/* Video style */
-.scroll-video{
-    width:100%;
-    border-radius:15px;
-    pointer-events:none; /* prevent default video click */
-}
-
-/* Confetti */
+/* CONFETTI */
 .confetti{
     position:fixed;
-    width:10px;
-    height:14px;
-    top:-20px;
-    animation:fall linear forwards;
+    width:8px;
+    height:8px;
+    background:red;
+    top:-10px;
+    animation:fall 4s linear infinite;
 }
 
 @keyframes fall{
     to{
-        transform:translateY(110vh) rotate(720deg);
-        opacity:0;
+        transform:translateY(100vh) rotate(360deg);
+    }
+}
+
+/* MOBILE */
+@media(max-width:600px){
+    .content{
+        width:92%;
+        padding:15px;
     }
 }
 </style>
 </head>
-
 <body>
 
-<div class="main-box">
-
-    <div class="balloon">
-        <img src="Images/balloon.png">
-    </div>
-
-    <div class="content-box">
-
-        <div class="scroll-container" id="scrollBox">
-
-            <video id="scrollVideo" class="scroll-video" preload="auto">
-                <source src="scroll.mp4" type="video/mp4">
-            </video>
-
-        </div>
-
-    </div>
-
+<!-- BALLOONS -->
+<div class="balloons">
+    <div class="balloon"></div>
+    <div class="balloon"></div>
+    <div class="balloon"></div>
+    <div class="balloon"></div>
 </div>
 
+<!-- CONTENT -->
+<div class="content" id="contentBox">
+    <h2>For You ❤️</h2>
+    <p>My Special Message Just For You 💌</p>
+
+    <video id="myVideo" muted>
+        <source src="your-video.mp4" type="video/mp4">
+    </video>
+</div>
+
+<!-- MUSIC -->
+<audio id="bgMusic" src="your-music.mp3"></audio>
+
 <script>
-const video = document.getElementById("scrollVideo");
-const box = document.getElementById("scrollBox");
 
-let opened = false;
-let confettiDone = false;
+/* Show content after balloons */
+setTimeout(()=>{
+    document.getElementById("contentBox").classList.add("show");
+},3000);
 
-video.removeAttribute("controls");
-video.pause();
-video.currentTime = 0;
+/* Video + Music Control */
+const video = document.getElementById("myVideo");
+const music = document.getElementById("bgMusic");
 
-/* Touch / Click */
-box.addEventListener("click", function(){
+video.addEventListener("click", function(){
 
-    if(!opened){
-        video.playbackRate = 1;
+    if(video.paused){
         video.play();
-
-        if(!confettiDone){
-            createConfetti(250); // MAX confetti 🎊
-            confettiDone = true;
-        }
-
-        opened = true;
-
+        music.play();
     }else{
-        reverseVideo();
-        opened = false;
+        video.pause();
+        music.pause();
+        music.currentTime = 0;
     }
 
 });
 
-/* Reverse video */
-function reverseVideo(){
-    video.playbackRate = -1;
-    video.play();
+/* Minimal Confetti */
+for(let i=0;i<15;i++){
+    let conf = document.createElement("div");
+    conf.className="confetti";
+    conf.style.left=Math.random()*100+"vw";
+    conf.style.background=["red","blue","green","orange","pink"][Math.floor(Math.random()*5)];
+    conf.style.animationDuration= (3+Math.random()*2)+"s";
+    document.body.appendChild(conf);
 }
 
-/* Heavy Confetti */
-function createConfetti(amount){
-    for(let i=0;i<amount;i++){
-        let conf = document.createElement("div");
-        conf.className="confetti";
-
-        conf.style.left=Math.random()*100+"vw";
-        conf.style.backgroundColor=
-        ["red","blue","yellow","green","pink","orange","purple","cyan","gold"][Math.floor(Math.random()*9)];
-
-        conf.style.animationDuration=(2+Math.random()*3)+"s";
-        conf.style.width=(6+Math.random()*8)+"px";
-        conf.style.height=(10+Math.random()*12)+"px";
-
-        document.body.appendChild(conf);
-
-        setTimeout(()=>{conf.remove();},5000);
-    }
-}
 </script>
 
 </body>
 </html>
-
-    <div class="content-box">
-        <h3>For You 💖</h3>
-
-        <div class="scroll-container" id="scroll">
-            <div class="scroll-img"></div>
-            <div class="scroll-paper"></div>
-
-            <div class="scroll-text">
-                <h4>My Special Letter 💌</h4>
-                <p>
-                    This message appears as the scroll opens.
-                    You can write anything beautiful here.
-                </p>
-            </div>
-        </div>
-
-    </div>
-
-</div>
-
-<audio id="bgm" src="Audio/bgm.mp3"></audio>
-
-<script>
-const scroll = document.getElementById("scroll");
-const bgm = document.getElementById("bgm");
-let opened = false;
-let confettiDone = false;
-
-scroll.addEventListener("click", function(){
-
-    if(!opened){
-        scroll.classList.remove("close");
-        scroll.classList.add("open");
-        bgm.currentTime = 0;
-        bgm.play();
-
-        if(!confettiDone){
-            createConfetti();
-            confettiDone = true;
-        }
-
-        opened = true;
-    }else{
-        scroll.classList.remove("open");
-        scroll.classList.add("close");
-        bgm.pause();
-        bgm.currentTime = 0;
-        opened = false;
-    }
-
-});
-
-/* Confetti function */
-function createConfetti(){
-    for(let i=0;i<40;i++){
-        let conf = document.createElement("div");
-        conf.className="confetti";
-        conf.style.left=Math.random()*100+"vw";
-        conf.style.backgroundColor=
-            ["red","blue","yellow","green","pink","orange"][Math.floor(Math.random()*6)];
-        conf.style.animationDuration=(2+Math.random()*2)+"s";
-        document.body.appendChild(conf);
-
-        setTimeout(()=>{conf.remove();},4000);
-    }
-}
-</script>
-
-</body>
-</html>
-
-<!-- 🎵 Music -->
-<audio id="bgm" loop>
-    <source src="Audio/bgm.mp3" type="audio/mpeg">
-</audio>
-
-<script>
-const container = document.querySelector(".scroll-container");
-const bgm = document.getElementById("bgm");
-bgm.volume = 0.3;
-
-let isOpen = false;
-
-function toggleScroll(){
-    if(!isOpen){
-        container.classList.remove("closing");
-        container.classList.add("open");
-        bgm.currentTime = 0;
-        bgm.play().catch(()=>{});
-        isOpen = true;
-    }else{
-        container.classList.remove("open");
-        containner.classList.add("closing");
-        bgm.pause();
-        bgm.currentTime = 0;
-        isOpen = false;
-    }
-}
-</script>
-
-</body>
-</html>
-
-
